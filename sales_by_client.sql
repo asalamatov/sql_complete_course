@@ -1,8 +1,13 @@
-use sql_invoicing;
-
-create or replace view sales_by_client as
-select c.client_id, c.name, 
-	sum(invoice_total) as total_sales
-FROM clients c
-JOIN invoices i using (client_id)
-GROUP BY client_id, name
+CREATE OR REPLACE VIEW invoices_with_balance AS
+SELECT
+	invoice_id,
+    number,
+    client_id,
+    invoice_total,
+    payment_total,
+    invoice_total - payment_total AS balance,
+    invoice_date,
+    due_date,
+    payment_date
+FROM invoices
+WHERE (invoice_total - payment_total) > 0
